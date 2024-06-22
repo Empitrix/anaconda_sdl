@@ -1,68 +1,42 @@
-#include <termios.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_scancode.h>
 #include <stdio.h>
+#include "rules.h"
+#include "structs.h"
 
-static struct termios old, current;
+void getdir(SDL_Event event){
+	while(SDL_PollEvent(&event)){
+		switch(event.type){
+			case SDL_QUIT:
+				running = 0;
+				break;
 
-void init_termios(){                /* terminal i/o settings */
-	tcgetattr(0, &old);               /* grab old terminal i/o settings */
-	current = old;                    /* make new settings same as old settings */
-	current.c_lflag &= ~ICANON;       /* disable buffered i/o */
-	current.c_lflag &= ~ECHO;         /* set no echo mode */
-	tcsetattr(0, TCSANOW, &current);  /* use these new terminal i/o settings now */
-}
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.scancode) {
+					case SDL_SCANCODE_Q:
+						running = 0;
+						break;
 
-/* Restore old terminal i/o settings */
-void reset_termios(void){
-	tcsetattr(0, TCSANOW, &old);
-}
-
-char getl(void){
-	char ch;
-	init_termios();
-	ch = getchar(); reset_termios();
-	return ch;
-}
-
-
-void nrm_termios(){
-	tcgetattr(0, &old);
-	current = old;
-	current.c_lflag |= ICANON;
-	current.c_lflag |= ECHO;
-	tcsetattr(0, TCSANOW, &current);
-}
-
-/*
-Explain:
-the arrow keys returns as negative integer:
-	-1: Up
-	-2: Down
-	-3: Right
-	-4: Left
-
-Other keys returns as their integer values:
-for example:
-	113: q
-	...
-*/
-
-int getkey(void){
-	int k, o;
-	o = 0;
-	switch ((k = getl())) {
-		case '\033':{
-			getl();  // skip
-			switch(k = getl()){
-				case 'A': o = -1; break;  // UP
-				case 'B': o = -2; break;  // Down
-				case 'C': o = -3; break;  // Right
-				case 'D': o = -4; break;  // Left
-				default: break;
-			}
-			break;
+					case SDL_SCANCODE_UP:
+						if(dir != D_DOWN)
+							dir = D_UP;
+						break;
+					case SDL_SCANCODE_DOWN:
+						if(dir != D_UP)
+							dir = D_DOWN;
+						break;
+					case SDL_SCANCODE_LEFT:
+						if(dir != D_RIGHT)
+							dir = D_LEFT;
+						break;
+					case SDL_SCANCODE_RIGHT:
+						if(dir != D_LEFT)
+							dir = D_RIGHT;
+						break;
+					default:
+						break;
+				}
 		}
-		default: o = k; break;
 	}
-	return o;
 }
 

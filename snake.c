@@ -1,7 +1,9 @@
-#include <signal.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_error.h>
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <stdarg.h>
 #include "src/rules.h"
 #include "src/screen.h"
@@ -9,14 +11,11 @@
 
 
 // macros
-#define WIDTH  60
-#define HEIGHT 30
+#define STEP 30
 #define MAXBLOCKS 10000
 
 
 static int ix, iy = 0;
-static int game_over = 0;
-static enum DIRECTION pre_move = D_UP;
 volatile int points = 0;
 
 
@@ -34,7 +33,7 @@ void continuous(enum DIRECTION dir){
 }
 
 
-void on_hit(void){ game_over = 1; }
+void on_hit(void){ running = 0; }
 void on_get(void){ points = points + 1; }
 
 
@@ -47,79 +46,36 @@ void gof(int score, char *format, ...){
 	va_end(aptr);
 	printf("Point%s: %i\n", points <= 1 ? "" : "s", points);
 	printf("%s\n", message);
-	nrm_termios();
-	exit(0);
+	running = 0;
 }
+
+static int width, height;
 
 
 static int lvl = 1;
 static struct BLOCK blocks[MAXBLOCKS] = {
-	{(int)(WIDTH / 2) - 2, (int)(HEIGHT / 2) - 2, A_HEAD, HEAD_BLOCK},
-	{(int)(WIDTH / 2) - 2, (int)(HEIGHT / 2) - 1, A_BODY, BODY_BLOCK},
-	{(int)(WIDTH / 2) - 2, (int)(HEIGHT / 2) - 0, A_BODY, BODY_BLOCK},
-	
+	{STEP * 10, STEP * 7, A_HEAD, HEAD_BLOCK},
 	{20, 20, A_POINT, CHEE_BLOCK},
 };
 
-void e_loop(int kcode){
-	ix = iy = 0;
-	char title[WIDTH];
-	enum DIRECTION dir = NONE;
 
-	switch(kcode){
-		// Up
-		case -1:{
-			if(pre_move == D_DOWN){
-				if(dir == NONE) dir = pre_move;
-				continuous(dir);
-				break;
-			}
-			--iy;
-			dir = D_UP;
+
+void e_loop(SDL_Renderer *rend){
+	ix = iy = 0;
+
+	// // check for size
+	switch(dir){
+		case D_UP: iy = -STEP;   printf("UP\n"); break;
+		case D_DOWN: iy = STEP;  printf("DOWN\n"); break;
+		case D_RIGHT: ix = STEP; printf("RIGHT\n"); break;
+		case D_LEFT: ix = -STEP; printf("LEFT\n"); break;
+		default:
 			break;
-		}
-		// Down
-		case -2:{
-			if(pre_move == D_UP){
-				if(dir == NONE) dir = pre_move;
-				continuous(dir);
-				break;
-			}
-			++iy;
-			dir = D_DOWN;
-			break;
-		}
-		// Right
-		case -3:{
-			if(pre_move == D_LEFT){
-				if(dir == NONE) dir = pre_move;
-				continuous(dir);
-				break;
-			}
-			++ix;
-			dir = D_RIGHT;
-			break;
-		}
-		// Left
-		case -4:{
-			if(pre_move == D_RIGHT){
-				if(dir == NONE) dir = pre_move;
-				continuous(dir);
-				break;
-			}
-			--ix;
-			dir = D_LEFT;
-			break;
-		}
-		// continue
-		default: {
-			if(dir == NONE) dir = pre_move;
-			continuous(dir);
-			break;
-		};
 	}
 
 
+
+	/*
 	int idx;
 	static struct BLOCK new_blocks[MAXBLOCKS];
 	// continuous movement
@@ -136,50 +92,45 @@ void e_loop(int kcode){
 	if(new_blocks[idx - 1].x == new_blocks[0].x && new_blocks[idx - 1].y == new_blocks[0].y){
 		points++;
 
-		switch((int)(points / 10) + 1){
-			case 1: lvl = 1; game_speed = 200; break;
-			case 2: lvl = 2; game_speed = 150; break;
-			case 3: lvl = 3; game_speed = 100; break;
-			case 4: lvl = 4; game_speed = 50; break;
-			default: break;
-		}
+		// switch((int)(points / 10) + 1){
+		// 	case 1: lvl = 1; game_speed = 200; break;
+		// 	case 2: lvl = 2; game_speed = 150; break;
+		// 	case 3: lvl = 3; game_speed = 100; break;
+		// 	case 4: lvl = 4; game_speed = 50; break;
+		// 	default: break;
+		// }
 
 		struct BLOCK newb = {new_blocks[idx - 2].x, new_blocks[idx - 2].y, A_BODY, BODY_BLOCK};
 		new_blocks[idx - 1] = newb;
-		// get new point block and added into the stack
-		int _max[2] = {WIDTH, HEIGHT};
-		new_blocks[idx] = unique_block(new_blocks, _max, CHEE_BLOCK, A_POINT);
+
+		// int _max[2] = {width, height};
+		// new_blocks[idx] = unique_block(new_blocks, _max, CHEE_BLOCK, A_POINT);
 	}
 
 	copy_blocks(blocks, new_blocks);  // save state
-	pre_move = dir;
 
-	// detect cross-over
-	if(bock_corssed(new_blocks[0], blocks) != -1)
-		gof(points, "You can't cross yourself");
+	// if(bock_corssed(new_blocks[0], blocks) != -1)
+	// 	gof(points, "You can't cross yourself");
 
 
-	char h1[20];
-	char h2[20];
-	char *h3 = " [q]uit";
-	sprintf(h1, " points: %i", points);
-	sprintf(h2, " lvl: %i", lvl);
-	char *headers[3] = { h1, h2, h3 };
+	char header[100];
+	sprintf(header, "Points: %i, Lvl: %i", points, lvl);
 
-	draw_frame(WIDTH, HEIGHT, new_blocks, on_hit, on_get, headers);
+	draw_frame(rend, new_blocks, on_hit, on_get, header);
+	*/
 
-	
-	if(kcode == 113)  // detect "q" and exit the game
-		gof(points, "Quitting game");
-
-	if(game_over)
+	if(running == 0)
 		gof(points, "You can't cross frame");
 
+	// predir = dir;
 }
+
 
 int main(void){
 	lvl = 1;
-	loop_event(e_loop);
+	width = STEP * 20;
+	height = STEP * 15;
+	loop_event(width, height, e_loop);
 	return 0;
 }
 
