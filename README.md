@@ -4,10 +4,8 @@
 		<img alt="Anaconda" src="./screen/anaconda_dark.svg" width="40%">
 	</picture>
 	<h1>Anaconda</h1>
-	<p>An snake game written in C for your UNIX-like terminal</p>
+	<p>An snake game written in C with help of SDL</p>
 </div>
-
-Anaconda is an snake game written in C as a porfolio project and for practice on [The C Programming Language](https://en.wikipedia.org/wiki/The_C_Programming_Language) book written by [Dennis Ritchie](https://en.wikipedia.org/wiki/Dennis_Ritchie) and [Brian Kernighan](https://en.wikipedia.org/wiki/Brian_Kernighan).
 
 ## Preview
 <div>
@@ -17,34 +15,23 @@ Anaconda is an snake game written in C as a porfolio project and for practice on
 
 ## Build
 
-> [!WARNING]
-> This program is only for UNIX-like operating systems like Linux... and it doesn't work in Windows.
+Requirements:
+- [**SDL**](https://github.com/libsdl-org/SDL)
 
-Recommanded requirements:
-- [**Nerd Font**](https://github.com/ryanoasis/nerd-fonts)
+[Install SDL on Linux](https://gist.github.com/aaangeletakis/3187339a99f7786c25075d4d9c80fad5)
 
 You can clone the project and compile it yourself:
 ```bash
-git clone "https://github.com/empitrix/anaconda.git"
-cd ./anaconda
-cc ./snake.c -o ./snake.out
+git clone "https://github.com/empitrix/anaconda_sdl.git"
+cd ./anaconda_sdl
+
+# compile
+gcc ./snake.c -o ./snake.out `sdl2-config --cflags --libs` -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
+
 ```
 Now you can run `./snake.out` to play the game.
 
+- You can quit the game by pressing `q`.
 
-- You can quiting the game by pressing `q`.
+[**Wish to play Anaconda on your Linux terminal?**](https://github.com/Empitrix/anaconda)
 
-<!--
-## Keys
-|    Key        |    Action          |
-|:--------------|:-------------------|
-| `q`           |   quit game        |
-| `ARROW-UP`    |   Move snake up    |
-| `ARROW-LEFT`  |   Move snake left  |
-| `ARROW-RIGHT` |   Move snake right |
-| `ARROW-DOWN`  |   Move snake down  |
-
-
-## TODO
-- [ ] Support for Windows
--->

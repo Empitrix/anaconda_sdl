@@ -21,22 +21,6 @@ volatile int points = 0;
 void restart();
 
 
-// void continuous(enum DIRECTION dir){
-// 	int *out = malloc(2);
-// 	ix = iy = 0;
-// 	if(dir == D_UP)
-// 		--iy;
-// 	else if(dir == D_DOWN)
-// 		++iy;
-// 	else if(dir == D_RIGHT)
-// 		++ix;
-// 	else
-// 		--ix;
-// }
-
-
-
-
 void gof(SDL_Renderer *rend, TTF_Font* font, int score, char *format, ...){
 	char message[1000];
 	va_list aptr;
