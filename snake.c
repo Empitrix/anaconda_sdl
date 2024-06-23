@@ -11,7 +11,6 @@
 
 
 // macros
-#define STEP 30
 #define MAXBLOCKS 10000
 
 
@@ -34,7 +33,6 @@ void continuous(enum DIRECTION dir){
 
 
 void on_hit(void){ running = 0; }
-void on_get(void){ points = points + 1; }
 
 
 void gof(int score, char *format, ...){
@@ -54,29 +52,32 @@ static int width, height;
 
 static int lvl = 1;
 static struct BLOCK blocks[MAXBLOCKS] = {
-	{STEP * 10, STEP * 7, A_HEAD, HEAD_BLOCK},
-	{20, 20, A_POINT, CHEE_BLOCK},
+	{STEP * 10, STEP * 7, A_HEAD},
+	{STEP * 10, STEP * 8, A_BODY},
+	{STEP * 10, STEP * 9, A_BODY},
+
+	// {STEP * 3, STEP * 2, A_POINT},
 };
 
+static int no_point = 1;
 
 
-void e_loop(SDL_Renderer *rend){
+void e_loop(SDL_Renderer *rend, TTF_Font *font){
 	ix = iy = 0;
 
-	// // check for size
+	// set movement
 	switch(dir){
-		case D_UP: iy = -STEP;   printf("UP\n"); break;
-		case D_DOWN: iy = STEP;  printf("DOWN\n"); break;
-		case D_RIGHT: ix = STEP; printf("RIGHT\n"); break;
-		case D_LEFT: ix = -STEP; printf("LEFT\n"); break;
-		default:
-			break;
+		case D_UP: iy = -STEP; break;
+		case D_DOWN: iy = STEP; break;
+		case D_RIGHT: ix = STEP; break;
+		case D_LEFT: ix = -STEP; break;
+		default: break;
 	}
 
 
 
-	/*
 	int idx;
+
 	static struct BLOCK new_blocks[MAXBLOCKS];
 	// continuous movement
 	copy_blocks(new_blocks, blocks);
@@ -89,47 +90,57 @@ void e_loop(SDL_Renderer *rend){
 		}
 	}
 
+
+	// if(new_blocks[0].y == 0){
+	// 	printf("HIT\n");
+	// }
+
+	// printf("[%i, %i]\n", new_blocks[0].x, new_blocks[0].y);
+
 	if(new_blocks[idx - 1].x == new_blocks[0].x && new_blocks[idx - 1].y == new_blocks[0].y){
 		points++;
 
-		// switch((int)(points / 10) + 1){
-		// 	case 1: lvl = 1; game_speed = 200; break;
-		// 	case 2: lvl = 2; game_speed = 150; break;
-		// 	case 3: lvl = 3; game_speed = 100; break;
-		// 	case 4: lvl = 4; game_speed = 50; break;
-		// 	default: break;
-		// }
+		switch((int)(points / 10) + 1){
+			case 1: lvl = 1; game_speed = 200; break;
+			case 2: lvl = 2; game_speed = 150; break;
+			case 3: lvl = 3; game_speed = 100; break;
+			case 4: lvl = 4; game_speed = 50; break;
+			default: break;
+		}
 
-		struct BLOCK newb = {new_blocks[idx - 2].x, new_blocks[idx - 2].y, A_BODY, BODY_BLOCK};
+		struct BLOCK newb = {new_blocks[idx - 2].x, new_blocks[idx - 2].y, A_BODY};
 		new_blocks[idx - 1] = newb;
 
-		// int _max[2] = {width, height};
-		// new_blocks[idx] = unique_block(new_blocks, _max, CHEE_BLOCK, A_POINT);
+		int _max[3] = {X_SCALE - 1, Y_SCALE - 1,  STEP};
+		new_blocks[idx] = unique_block(new_blocks, _max, A_POINT);
+	}
+
+	if(no_point){
+		int _max[3] = {X_SCALE - 1, Y_SCALE - 1,  STEP};
+		new_blocks[idx] = unique_block(new_blocks, _max, A_POINT);
+		no_point = 0;
 	}
 
 	copy_blocks(blocks, new_blocks);  // save state
 
-	// if(bock_corssed(new_blocks[0], blocks) != -1)
-	// 	gof(points, "You can't cross yourself");
+	if(bock_corssed(new_blocks[0], blocks) != -1)
+		gof(points, "You can't cross yourself");
 
 
 	char header[100];
-	sprintf(header, "Points: %i, Lvl: %i", points, lvl);
+	sprintf(header, "Points: %i    Level: %i", points, lvl);
 
-	draw_frame(rend, new_blocks, on_hit, on_get, header);
-	*/
+	draw_frame(rend, font, new_blocks, on_hit, header);
 
 	if(running == 0)
 		gof(points, "You can't cross frame");
-
-	// predir = dir;
 }
 
 
 int main(void){
 	lvl = 1;
-	width = STEP * 20;
-	height = STEP * 15;
+	width = (STEP * X_SCALE) + STEP;
+	height = (STEP * Y_SCALE) + STEP;
 	loop_event(width, height, e_loop);
 	return 0;
 }

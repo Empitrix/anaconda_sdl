@@ -46,16 +46,19 @@ int bock_corssed(struct BLOCK block, struct BLOCK blocks[]){
 }
 
 
-struct BLOCK unique_block(struct BLOCK blocks[], int max[2], char *code, enum BLOCK_ACT act){
+struct BLOCK unique_block(struct BLOCK blocks[], int max[3], enum BLOCK_ACT act){
 	struct BLOCK block;
 
 	do{
-		int tx = randint(2, max[0] - 3);
-		int ty = randint(3, max[1] - 5);
-		block = (struct BLOCK){tx, ty, act, code};
+		int tx = randint(1, max[0]);
+		int ty = randint(3, max[1]);
+		printf("tX: %i, tY: %i\n", tx, ty);
+		block = (struct BLOCK){tx, ty, act};
 
 	} while(bock_corssed(block, blocks) != -1);
 
+	block.x = block.x * max[2];
+	block.y = block.y * max[2];
 	return block;
 }
 

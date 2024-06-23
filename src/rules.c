@@ -1,13 +1,35 @@
 #include "structs.h"
 
-#define HEAD_BLOCK "\x1B[31m■\x1B[0m"  // HEAD BLOCK
-#define BODY_BLOCK "\x1B[32m■\x1B[0m"  // BODY BLOCK
-#define CHEE_BLOCK "\x1B[33m\x1B[0m"  // POINT BLOCK
+#define STEP 15
 
-// extern volatile int game_speed = 100;
+#define SDL_WKLR (SDL_Color){255, 255, 255, 255}
+
+#define X_SCALE 50
+#define Y_SCALE 45
+
+
+#define TOPSIZ 30 - 1
+
+#define FONTSIZ 18
+
+
+// colors
+//
+// border
+#define BKLR (SDL_Color){30, 30, 30, 255}
+// backgournd color
+#define BGKLR (SDL_Color){30, 30, 30, 255}
+
+// game head
+#define GHKLR (SDL_Color){240, 30, 44, 255}
+// game body
+#define GBKLR (SDL_Color){30, 123, 97, 255}
+// game point
+#define GPKLR (SDL_Color){29, 158, 224, 255}
+
 volatile int game_speed = 200;
 int running = 1;
 
-// enum DIRECTION predir = D_UP;
 enum DIRECTION dir = D_UP;
+
 

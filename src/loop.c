@@ -16,7 +16,7 @@ volatile int status = 0;
 static void (*p_event)(enum DIRECTION);
 
 
-void loop_event(int width, int height, void (*eloop)(SDL_Renderer*)) {
+void loop_event(int width, int height, void (*eloop)(SDL_Renderer*, TTF_Font*)) {
 
 	if(SDL_Init(SDL_INIT_EVERYTHING) != 0){
 		printf("Failed: %s\n", SDL_GetError());
@@ -31,7 +31,7 @@ void loop_event(int width, int height, void (*eloop)(SDL_Renderer*)) {
 
 	// FONT
 	TTF_Init();
-	TTF_Font *font = TTF_OpenFont("./assets/poppins.ttf", 20);
+	TTF_Font *font = TTF_OpenFont("./assets/poppins.ttf", FONTSIZ);
 
 
 	if(font == NULL)
@@ -40,13 +40,13 @@ void loop_event(int width, int height, void (*eloop)(SDL_Renderer*)) {
 
 	while(running){
 
-		SDL_SetRenderDrawColor(rend, 30, 30, 30, 255);
+		SDL_SetRenderDrawColor(rend, BGKLR.r, BGKLR.g, BGKLR.b, BGKLR.a);
 		SDL_RenderClear(rend);
 
 		SDL_Event event;
 
 		getdir(event);  // update direction 
-		eloop(rend);
+		eloop(rend, font);
 
 		SDL_RenderPresent(rend);
 
