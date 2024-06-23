@@ -40,3 +40,32 @@ void getdir(SDL_Event event){
 	}
 }
 
+
+int getans(SDL_Event event){
+	int state = -1;
+	while(SDL_PollEvent(&event)){
+		switch(event.type){
+			case SDL_QUIT:
+				running = 0;
+				gofa = 0;
+				break;
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.scancode){
+					case SDL_SCANCODE_Q:
+						running = 0;
+						gofa = 0;
+						break;
+					case SDL_SCANCODE_Y:
+						state = 1;
+						break;
+					case SDL_SCANCODE_N:
+						state = 0;
+						break;
+					default:
+						state = -1;
+						break;
+				}
+		}
+	}
+	return state;
+}

@@ -7,22 +7,13 @@
 #include <string.h>
 #include "utils.h"
 #include "rules.h"
-
+#include "renderer.h"
 
 
 void draw_frame(SDL_Renderer *rend, TTF_Font* font, struct BLOCK blocks[], void (*on_hit)(void), char *header){
 	int x, y, i;
 
-	int tw = (int)strlen(header) * (FONTSIZ) - 100;
-
-	SDL_Surface *txtrend = TTF_RenderText_Blended_Wrapped(font, header, SDL_WKLR, tw);
-	SDL_Texture *texture = SDL_CreateTextureFromSurface(rend, txtrend);
-	SDL_Rect srect = {0, 0, tw, TOPSIZ};
-	SDL_RenderCopy(rend, texture, NULL, &srect);
-	SDL_SetRenderDrawColor(rend, SDL_WKLR.r, SDL_WKLR.g, SDL_WKLR.b, SDL_WKLR.a);
-
-	SDL_RenderDrawLine(rend, 0, TOPSIZ, (STEP * X_SCALE) + STEP, TOPSIZ);
-
+	rtextf(rend, font, header, FONTSIZ);
 
 	if(blocks[0].y <= 30)
 		on_hit();            // top limit
@@ -57,5 +48,6 @@ void draw_frame(SDL_Renderer *rend, TTF_Font* font, struct BLOCK blocks[], void 
 
 	}
 
+	// SDL_RenderPresent(rend);
 }
 

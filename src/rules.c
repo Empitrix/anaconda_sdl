@@ -30,6 +30,7 @@
 volatile int game_speed = 200;
 int running = 1;
 
+static int gofa = 0;
 enum DIRECTION dir = D_UP;
 
 

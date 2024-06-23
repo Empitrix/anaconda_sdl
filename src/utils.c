@@ -52,7 +52,7 @@ struct BLOCK unique_block(struct BLOCK blocks[], int max[3], enum BLOCK_ACT act)
 	do{
 		int tx = randint(1, max[0]);
 		int ty = randint(3, max[1]);
-		printf("tX: %i, tY: %i\n", tx, ty);
+		// printf("tX: %i, tY: %i\n", tx, ty);
 		block = (struct BLOCK){tx, ty, act};
 
 	} while(bock_corssed(block, blocks) != -1);

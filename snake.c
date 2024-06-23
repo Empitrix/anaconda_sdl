@@ -18,24 +18,26 @@ static int ix, iy = 0;
 volatile int points = 0;
 
 
-void continuous(enum DIRECTION dir){
-	int *out = malloc(2);
-	ix = iy = 0;
-	if(dir == D_UP)
-		--iy;
-	else if(dir == D_DOWN)
-		++iy;
-	else if(dir == D_RIGHT)
-		++ix;
-	else
-		--ix;
-}
+void restart();
 
 
-void on_hit(void){ running = 0; }
+// void continuous(enum DIRECTION dir){
+// 	int *out = malloc(2);
+// 	ix = iy = 0;
+// 	if(dir == D_UP)
+// 		--iy;
+// 	else if(dir == D_DOWN)
+// 		++iy;
+// 	else if(dir == D_RIGHT)
+// 		++ix;
+// 	else
+// 		--ix;
+// }
 
 
-void gof(int score, char *format, ...){
+
+
+void gof(SDL_Renderer *rend, TTF_Font* font, int score, char *format, ...){
 	char message[1000];
 	va_list aptr;
 	int ret;
@@ -44,7 +46,19 @@ void gof(int score, char *format, ...){
 	va_end(aptr);
 	printf("Point%s: %i\n", points <= 1 ? "" : "s", points);
 	printf("%s\n", message);
-	running = 0;
+
+
+	while(gofa){
+		gof_rend(rend, font, points, restart);
+		SDL_Delay(100);
+	}
+
+	// running = 0;
+}
+
+void on_hit(void){
+	// running = 0;
+	gofa = 1;
 }
 
 static int width, height;
@@ -115,7 +129,7 @@ void e_loop(SDL_Renderer *rend, TTF_Font *font){
 		new_blocks[idx] = unique_block(new_blocks, _max, A_POINT);
 	}
 
-	if(no_point){
+	if(no_point && blocks[idx - 1].act != A_POINT){
 		int _max[3] = {X_SCALE - 1, Y_SCALE - 1,  STEP};
 		new_blocks[idx] = unique_block(new_blocks, _max, A_POINT);
 		no_point = 0;
@@ -124,7 +138,7 @@ void e_loop(SDL_Renderer *rend, TTF_Font *font){
 	copy_blocks(blocks, new_blocks);  // save state
 
 	if(bock_corssed(new_blocks[0], blocks) != -1)
-		gof(points, "You can't cross yourself");
+		gof(rend, font, points, "You can't cross yourself");
 
 
 	char header[100];
@@ -132,15 +146,31 @@ void e_loop(SDL_Renderer *rend, TTF_Font *font){
 
 	draw_frame(rend, font, new_blocks, on_hit, header);
 
-	if(running == 0)
-		gof(points, "You can't cross frame");
+	if(gofa)
+		gof(rend, font, points, "You can't cross frame");
+
 }
 
+void restart(){
+	lvl = 1;
+	dir = D_UP;
+	gofa = 0;
+	running = 1;
+	no_point = 1;
+	points = 0;
+
+	struct BLOCK b[MAXBLOCKS] = {
+		{STEP * 10, STEP * 7, A_HEAD},
+		{STEP * 10, STEP * 8, A_BODY},
+		{STEP * 10, STEP * 9, A_BODY},
+	};
+	copy_blocks(blocks, b);
+}
 
 int main(void){
-	lvl = 1;
 	width = (STEP * X_SCALE) + STEP;
 	height = (STEP * Y_SCALE) + STEP;
+	restart();
 	loop_event(width, height, e_loop);
 	return 0;
 }
