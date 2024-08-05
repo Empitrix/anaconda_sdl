@@ -2,10 +2,6 @@
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "utils.h"
 #include "rules.h"
 #include "renderer.h"
 
@@ -31,8 +27,6 @@ void draw_frame(SDL_Renderer *rend, TTF_Font* font, struct BLOCK blocks[], void 
 		rect.y = blocks[i].y - STEP;
 		rect.w = rect.h = STEP;
 
-
-
 		if(blocks[i].act == A_HEAD)
 			SDL_SetRenderDrawColor(rend, GHKLR.r, GHKLR.g, GHKLR.b, 255);
 		else if(blocks[i].act == A_POINT)
@@ -45,9 +39,6 @@ void draw_frame(SDL_Renderer *rend, TTF_Font* font, struct BLOCK blocks[], void 
 		// draw rect border
 		SDL_SetRenderDrawColor(rend, BKLR.r, BKLR.g, BKLR.b, BKLR.a);
 		SDL_RenderDrawRect(rend, &rect);
-
 	}
-
-	// SDL_RenderPresent(rend);
 }
 

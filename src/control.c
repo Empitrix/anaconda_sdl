@@ -1,8 +1,8 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_scancode.h>
-#include <stdio.h>
 #include "rules.h"
 #include "structs.h"
+
 
 void getdir(SDL_Event event){
 	while(SDL_PollEvent(&event)){

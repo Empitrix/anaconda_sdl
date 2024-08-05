@@ -1,9 +1,8 @@
-#include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include "structs.h"
  
-// wait by milli seconds
+// wait by milliseconds
 void delay_ms(int ms){
 	clock_t start_time = clock();
 	while (clock() < start_time + (1000 * ms));
@@ -20,6 +19,7 @@ int contain_coord(int x, int y, struct BLOCK blocks[]){
 	return -1;
 }
 
+
 // copy array of blocks pr to se
 void copy_blocks(struct BLOCK se[], struct BLOCK pa[]){
 	int idx;
@@ -32,7 +32,6 @@ void copy_blocks(struct BLOCK se[], struct BLOCK pa[]){
 int randint(int min, int max){
 	return rand() % max + min;
 }
-
 
 
 int bock_corssed(struct BLOCK block, struct BLOCK blocks[]){
@@ -52,7 +51,6 @@ struct BLOCK unique_block(struct BLOCK blocks[], int max[3], enum BLOCK_ACT act)
 	do{
 		int tx = randint(1, max[0]);
 		int ty = randint(3, max[1]);
-		// printf("tX: %i, tY: %i\n", tx, ty);
 		block = (struct BLOCK){tx, ty, act};
 
 	} while(bock_corssed(block, blocks) != -1);

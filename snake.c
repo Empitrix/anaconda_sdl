@@ -3,11 +3,11 @@
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdarg.h>
 #include "src/rules.h"
 #include "src/screen.h"
 #include "src/loop.h"
+#include "src/utils.h"
 
 
 // macros

@@ -2,13 +2,11 @@
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_ttf.h>
-#include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <time.h>
 #include "control.h"
-#include "utils.h"
 #include "rules.h"
 
 

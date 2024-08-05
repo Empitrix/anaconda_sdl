@@ -4,6 +4,7 @@
 #include "rules.h"
 #include "control.h"
 
+
 SDL_Renderer *rtextf(SDL_Renderer *rend, TTF_Font* font, char* text, int size){
 	int w = (int)strlen(text) * (size) - 100;
 	SDL_Surface *txtrend = TTF_RenderText_Blended_Wrapped(font, text, SDL_WKLR, w);

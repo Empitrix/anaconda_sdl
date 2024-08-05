@@ -13,8 +13,8 @@
 #define FONTSIZ 18
 
 
-// colors
-//
+/* Colors */
+
 // border
 #define BKLR (SDL_Color){30, 30, 30, 255}
 // backgournd color

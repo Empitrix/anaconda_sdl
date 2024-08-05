@@ -6,4 +6,5 @@ struct BLOCK {
 	enum BLOCK_ACT act;
 };
 
+
 enum DIRECTION {D_LEFT, D_RIGHT, D_UP, D_DOWN};
